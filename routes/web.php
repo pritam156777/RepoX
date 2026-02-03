@@ -213,5 +213,8 @@ Route::get('/orders/pdf', [OrderController::class, 'generatePdf'])->name('orders
         'secret' => substr(config('services.stripe.secret'), 0, 10) . '***'
     ];
 });*/
+Route::get('/env-check', function () {
+    return env('APP_URL', 'NOT LOADED');
+});
 
 

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AdminOrderNotificationMail;
 use App\Mail\OrderInvoiceMail;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
+use App\Models\User;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -113,6 +115,21 @@ class OrderController extends Controller
             // 6️⃣ Clear cart
             Cart::where('user_id', $user->id)->delete();
 
+            $order->load('items.product', 'user');
+
+            // 🧑‍💼 Identify Admin(s) for this order
+            $adminIds = $order->items
+                ->pluck('product.admin_id')
+                ->unique()
+                ->filter();
+
+            $admins = User::whereIn('id', $adminIds)
+                ->where('role', 'admin')
+                ->get();
+            $superAdmin = User::where('role', 'super_admin')->first();
+
+
+
             // 7️⃣ Generate PDF invoice
             $pdfDir = storage_path('app/products/invoices');
             if (!file_exists($pdfDir)) {
@@ -125,9 +142,22 @@ class OrderController extends Controller
             );
             $pdf->save($pdfPath);
 
-            // 8️⃣ Send emails immediately
-            Mail::to($user->email)->send(new OrderInvoiceMail($order, $pdfPath));
-            Mail::to('pritam156777@gmail.com')->send(new \App\Mail\AdminOrderNotificationMail($order));
+            // 📧 EMAIL → CUSTOMER
+            Mail::to($user->email)->send(
+                new OrderInvoiceMail($order, $pdfPath, $admins, $superAdmin)
+            );
+
+            // 📧 EMAIL → EACH ADMIN
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->send(
+                    new AdminOrderNotificationMail($order, $admin)
+                );
+            }
+            if ($superAdmin) {
+                Mail::to($superAdmin->email)->send(
+                    new \App\Mail\SuperAdminOrderNotificationMail($order)
+                );
+            }
 
             DB::commit();
 

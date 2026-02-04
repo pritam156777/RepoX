@@ -56,31 +56,7 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/dev/create-folders', function () {
-    $folders = [
-        'electronics','fashion','groceries','mobiles','laptops',
-        'beauty','sports','toys','books','home-appliances'
-    ];
-
-    foreach ($folders as $folder) {
-        $path = public_path("uploads/folders/$folder");
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-    }
-
-    return '✅ All folders created';
-});
-
-/*
-|--------------------------------------------------------------------------
-| CART (AUTH REQUIRED)
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/pritam-superadmin-create', function () {
-
-    // Stop if already exists
-    if (User::where('email', 'pritam156777@gmail.com')->exists()) {
+  if (User::where('email', 'pritam156777@gmail.com')->exists()) {
         return '❌ Super Admin already exists. DELETE THIS ROUTE.';
     }
 
@@ -93,6 +69,13 @@ Route::get('/pritam-superadmin-create', function () {
 
     return '✅ Super Admin created successfully. DELETE THIS ROUTE NOW!';
 });
+
+/*
+|--------------------------------------------------------------------------
+| CART (AUTH REQUIRED)
+|--------------------------------------------------------------------------
+*/
+
 
 
 

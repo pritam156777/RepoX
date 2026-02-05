@@ -150,6 +150,11 @@ Route::middleware(['auth', 'role:super_admin|admin'])
     ->prefix('super-admin')
     ->group(function () {
 
+         Route::put(
+            'categories/{category:uuid}/photo',
+            [CategoryController::class, 'updatePhoto']
+        )->name('categories.photo.update');
+
         Route::get('/dashboard', [SuperAdminDashboardController::class, 'dashboard'])
             ->name('super-admin.dashboard');
 

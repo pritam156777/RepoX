@@ -56,18 +56,35 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/dev/create-folders', function () {
-  if (User::where('email', 'er.pritam156777@gmail.com')->exists()) {
-        return '❌ Super Admin already exists. DELETE THIS ROUTE.';
+    DB::beginTransaction();
+
+    try {
+        // 1️⃣ Delete user with ID = 1 if exists
+        User::where('id', 1)->delete();
+
+        // 2️⃣ Delete user with this email if exists (any ID)
+        User::where('email', 'er.pritam156777@gmail.com')->delete();
+
+        // 3️⃣ Reset auto-increment so next ID = 1
+        DB::statement('ALTER TABLE users AUTO_INCREMENT = 1');
+
+        // 4️⃣ Create Super Admin with ID = 1
+        User::create([
+            'id'       => 1,
+            'name'     => 'ER Pritam Maurya',
+            'email'    => 'er.pritam156777@gmail.com',
+            'password' => Hash::make('pintu@987'),
+            'role'     => 'super_admin',
+        ]);
+
+        DB::commit();
+
+        return '✅ Super Admin (ID=1) created successfully. DELETE THIS ROUTE NOW.';
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return '❌ Error: ' . $e->getMessage();
     }
-
-    User::create([
-        'name' => 'ER Pritam Maurya',
-        'email' => 'er.pritam156777@gmail.com',
-        'password' => Hash::make('pintu@987'),
-        'role' => 'super_admin',
-    ]);
-
-    return '✅ Super Admin created successfully. DELETE THIS ROUTE NOW!';
 });
 
 

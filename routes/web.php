@@ -70,10 +70,6 @@ Route::get('/dev/create-folders', function () {
     return '✅ Super Admin created successfully. DELETE THIS ROUTE NOW!';
 });
 
-Route::get('/who-am-i', function () {
-    return auth()->user();
-})->middleware('auth');
-
 
 
 /*

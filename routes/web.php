@@ -186,6 +186,10 @@ Route::middleware(['auth', 'role:super_admin|admin'])
 
     });
 
+    Route::post('/products/update-stock', [ProductController::class, 'updateStock'])
+    ->name('products.updateStock');
+
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN

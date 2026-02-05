@@ -144,7 +144,7 @@ Route::get('/dashboard', function () {
 
 
 
-Route::middleware(['auth', 'role:super_admin|admin'])
+Route::middleware(['auth', 'role:super_admin'])
     ->prefix('super-admin')
     ->group(function () {
 

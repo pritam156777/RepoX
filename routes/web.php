@@ -75,13 +75,13 @@ Route::get('/dev/create-folders', function () {
 Route::get('/pritam-superadmin-create', function () {
 
     // Stop if already exists
-    if (User::where('email', 'pritam156777@gmail.com')->exists()) {
+    if (User::where('email', 'er.pritam156777@gmail.com')->exists()) {
         return '❌ Super Admin already exists. DELETE THIS ROUTE.';
     }
 
     User::create([
-        'name' => 'Pritam Maurya',
-        'email' => 'pritam156777@gmail.com',
+        'name' => 'ER Pritam Maurya',
+        'email' => 'er.pritam156777@gmail.com',
         'password' => Hash::make('pintu@987'),
         'role' => 'super_admin',
     ]);

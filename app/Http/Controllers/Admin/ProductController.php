@@ -54,6 +54,27 @@ class ProductController extends Controller
             ->with('success', 'Product created successfully!');
     }
 
+
+    public function updateStock(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'quantity'   => 'required|integer'
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
+
+        $product->stock = max(0, $product->stock + $request->quantity);
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'stock'   => $product->stock
+        ]);
+    }
+
+
+
     public function edit(Product $product)
     {
         $this->authorize('update', $product); // Make sure admin owns this product

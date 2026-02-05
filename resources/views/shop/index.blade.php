@@ -1,10 +1,42 @@
 @extends('layouts.app')
 
-@section('title')
-    {{ isset($category) ? $category->name : 'Shop' }}
-@endsection
+ <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
 
-@section('content')
+
+        {{-- CATEGORY TITLE --}}
+        <h1 class="text-3xl font-bold mb-4">
+            {{ $category ? $category->name : 'Shop' }}
+        </h1>
+
+        {{-- CATEGORY IMAGE --}}
+        @if($category && $category->photo)
+            <img src="{{ asset('storage/' . $category->photo) }}"
+                 class="h-40 rounded-lg mb-4">
+        @endif
+
+
+        @auth
+            @if(auth()->user()->role === 'super_admin')
+
+                <form style="margin-bottom: 5pc" action="{{ route('categories.photo.update', $category->uuid) }}"
+                      method="POST"
+                      enctype="multipart/form-data">
+
+                    @csrf
+                    @method('PUT')
+
+                    <input type="file" name="photo" required>
+
+                    <button type="submit" class="btn btn-primary">
+                        Update Category Photo
+                    </button>
+
+                </form>
+
+            @endif
+        @endauth
+
+     @section('content')
 
     <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
 

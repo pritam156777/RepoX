@@ -2,8 +2,12 @@
 
  <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
 
+     @section('content')
 
-        {{-- CATEGORY TITLE --}}
+    <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
+
+
+    {{-- CATEGORY TITLE --}}
         <h1 class="text-3xl font-bold mb-4">
             {{ $category ? $category->name : 'Shop' }}
         </h1>
@@ -36,10 +40,8 @@
             @endif
         @endauth
 
-     @section('content')
-
-    <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
-
+        
+        
         @if($products->count())
 
             <div class="views-shop-index-grid">

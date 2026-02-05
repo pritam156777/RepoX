@@ -19,7 +19,7 @@
                 {{-- CATEGORY IMAGE --}}
                 @if($category && $category->photo)
                     <img src="{{ asset('storage/' . $category->photo) }}"
-                         class="h-40 rounded-lg mb-4">
+                         class="rounded-lg mb-4">
                 @endif
 
 

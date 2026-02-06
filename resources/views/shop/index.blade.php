@@ -1,14 +1,56 @@
 @extends('layouts.app')
-
-@section('title')
-    {{ isset($category) ? $category->name : 'Shop' }}
-@endsection
-
 @section('content')
+
+
 
     <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
 
-        @if($products->count())
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
+        @auth
+            @if(auth()->user()->role === 'super_admin')
+
+
+                <h1 class="text-3xl font-bold mb-4">
+                    {{ $category ? $category->name : 'Shop' }}
+                </h1>
+
+                {{-- CATEGORY IMAGE --}}
+                @if($category && $category->photo)
+                    <img src="{{ asset('storage/' . $category->photo) }}"
+                         class="h-40 rounded-lg mb-4">
+                @endif
+
+
+
+                <form style="margin-bottom: 5pc" action="{{ route('categories.photo.update', $category->uuid) }}"
+                      method="POST"
+                      enctype="multipart/form-data">
+
+                    @csrf
+                    @method('PUT')
+
+                    <input type="file" name="photo" required>
+
+                    <button type="submit" class="btn btn-primary">
+                        Update Category Photo
+                    </button>
+
+                </form>
+
+            @endif
+        @endauth
+
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
+    @if($products->count())
 
             <div class="views-shop-index-grid">
 
@@ -37,7 +79,7 @@
                         </div>
 
                         {{-- PRODUCT INFO --}}
-                        <div class="views-shop-index-info flex flex-col justify-between h-full">
+                        <div class="views-shop-index-info flex flex-col justify-between">
 
                             <h3>{{ $product->name }}</h3>
 

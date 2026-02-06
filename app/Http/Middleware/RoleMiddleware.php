@@ -8,22 +8,40 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
+
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // 1️⃣ Must be logged in
+<<<<<<< HEAD
+
         if (!auth()->check()) {
-            abort(401, 'Not authenticated');
+        abort(403);
+    }
+
+        // FIX: split roles if passed as "super_admin|admin"
+        $roles = collect($roles)
+            ->flatMap(fn ($role) => explode('|', $role))
+            ->toArray();
+
+        if (!in_array(auth()->user()->role, $roles)) {
+            abort(403, 'Forbidden - role mismatch issue');
         }
 
-        // 2️⃣ Get user role
-        $userRole = auth()->user()->role;
-
-        // 3️⃣ Check role
-        if (!in_array($userRole, $roles)) {
-            abort(403, 'Forbidden - role mismatch');
+=======
+        if (!auth()->check()) {
+            abort(403);
         }
 
-        // 4️⃣ Allow request
+        // FIX: split roles if passed as "super_admin|admin"
+        $roles = collect($roles)
+            ->flatMap(fn ($role) => explode('|', $role))
+            ->toArray();
+
+        if (!in_array(auth()->user()->role, $roles)) {
+            abort(403, 'Forbidden - role mismatch issue');
+        }
+
+>>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
         return $next($request);
+
     }
 }

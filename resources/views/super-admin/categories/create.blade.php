@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 py-12">
+    <div class="">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Success Message -->
             @if(session('success'))
@@ -35,7 +35,7 @@
                         </label>
 
                         <input type="text" name="name" value="{{ old('name') }}" required
-                               class="w-full border border-gray-600 bg-gray-900 text-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                               class="w-full border border-gray-600 bg-gray-900 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                                placeholder="e.g. Electronics, Furniture, Accessories">
 
                         <p class="text-gray-500 text-xs mt-1">

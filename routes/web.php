@@ -1,29 +1,34 @@
 <?php
 
-use App\Http\Controllers\SuperAdmin\AdminManagementController;
-use App\Http\Controllers\SuperAdmin\CategoryController;
-use App\Http\Controllers\SuperAdmin\UserManagementController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+use App\Models\User;
 use App\Models\Product;
 
-/*
-|--------------------------------------------------------------------------
-| Controllers
-|--------------------------------------------------------------------------
-*/
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
-use App\Http\Controllers\User\DashboardController as UserDashboardController;
-
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ShopController;
-use App\Models\User;
 
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
+
+use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
+use App\Http\Controllers\SuperAdmin\CategoryController;
+use App\Http\Controllers\SuperAdmin\AdminManagementController;
+use App\Http\Controllers\SuperAdmin\UserManagementController;
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ROUTES
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', [ShopController::class, 'home'])->name('home');
 
@@ -33,50 +38,11 @@ Route::prefix('shop')->name('shop.')->group(function () {
     Route::get('{product:uuid}', [ShopController::class, 'show'])->name('show');
 });
 
-Route::middleware('auth')->group(function () {
-
-   Route::match(['get','post'], '/cart/add/{uuid}', [CartController::class, 'add'])->name('cart.add');
-
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
-    // NEW: Checkout page (GET)
-    Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('cart.checkout');
-
-    // NEW: AJAX create PaymentIntent
-    Route::post('/cart/create-payment-intent', [OrderController::class, 'createPaymentIntent'])->name('cart.createPaymentIntent');
-
-    // Checkout submit (POST)
-    Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout.store');
-
-    // Checkout success page
-    Route::get('/checkout/success', [OrderController::class, 'success'])->name('checkout.success');
-
-    Route::delete('/cart/remove/{product:uuid}', [CartController::class, 'remove'])->name('cart.remove');
-});
-
-
-Route::get('/dev/create-folders', function () {
-    $folders = [
-        'electronics','fashion','groceries','mobiles','laptops',
-        'beauty','sports','toys','books','home-appliances'
-    ];
-
-    foreach ($folders as $folder) {
-        $path = public_path("uploads/folders/$folder");
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-    }
-
-    return '✅ All folders created';
-});
-
 /*
 |--------------------------------------------------------------------------
-| CART (AUTH REQUIRED)
+| AUTH ROUTES
 |--------------------------------------------------------------------------
 */
-
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])
     ->middleware('guest')
@@ -98,9 +64,39 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
 
 /*
 |--------------------------------------------------------------------------
-| ROLE BASED DASHBOARD REDIRECT
+| CART & CHECKOUT (AUTH REQUIRED)
 |--------------------------------------------------------------------------
 */
+
+Route::middleware('auth')->group(function () {
+
+    Route::match(['get', 'post'], '/cart/add/{uuid}', [CartController::class, 'add'])
+        ->name('cart.add');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+    Route::delete('/cart/remove/{product:uuid}', [CartController::class, 'remove'])
+        ->name('cart.remove');
+
+    Route::get('/checkout', [OrderController::class, 'checkoutPage'])
+        ->name('cart.checkout');
+
+    Route::post('/checkout', [OrderController::class, 'checkout'])
+        ->name('checkout.store');
+
+    Route::post('/cart/create-payment-intent', [OrderController::class, 'createPaymentIntent'])
+        ->name('cart.createPaymentIntent');
+
+    Route::get('/checkout/success', [OrderController::class, 'success'])
+        ->name('checkout.success');
+});
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD REDIRECT (ROLE BASED)
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/dashboard', function () {
     $user = auth()->user();
 
@@ -113,18 +109,9 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| SUPER ADMIN
+| SUPER ADMIN ROUTES
 |--------------------------------------------------------------------------
 */
-/*Route::middleware(['auth', 'role:super_admin'])
-    ->prefix('super-admin')
-    ->group(function () {
-
-        Route::get('/dashboard', [SuperAdminDashboardController::class, 'dashboard'])
-            ->name('super-admin.dashboard');
-    });*/
-
-
 
 Route::middleware(['auth', 'role:super_admin'])
     ->prefix('super-admin')
@@ -133,47 +120,44 @@ Route::middleware(['auth', 'role:super_admin'])
         Route::get('/dashboard', [SuperAdminDashboardController::class, 'dashboard'])
             ->name('super-admin.dashboard');
 
-        /*
-        |--------------------------------------------------------------------------
-        | 🔥 ADMIN MANAGEMENT (ADDED)
-        |--------------------------------------------------------------------------
-        */
-        Route::get('/admins', [AdminManagementController::class, 'store'])
+        Route::put(
+            'categories/{category:uuid}/photo',
+            [CategoryController::class, 'updatePhoto']
+        )->name('categories.photo.update');
+
+        // Admin management
+        Route::get('/admins', [AdminManagementController::class, 'index'])
             ->name('super-admin.admins.index');
 
+        Route::get('/admins/create', [AdminManagementController::class, 'create'])
+            ->name('super-admin.admins.create');
 
-        Route::get('/admins/create', [AdminManagementController::class, 'create'])->name('super-admin.admins.create');
-        Route::post('/admins', [AdminManagementController::class, 'store'])->name('super-admin.admins.store');
+        Route::post('/admins', [AdminManagementController::class, 'store'])
+            ->name('super-admin.admins.store');
 
+        // User management
+        Route::get('/users/create', [UserManagementController::class, 'create'])
+            ->name('super-admin.users.create');
 
-        Route::get('/users/create', [UserManagementController::class, 'create'])->name('super-admin.users.create');
-        Route::post('/users', [UserManagementController::class, 'store'])->name('super-admin.users.store');
+        Route::post('/users', [UserManagementController::class, 'store'])
+            ->name('super-admin.users.store');
 
-
+        // Categories
         Route::get('categories/create', [CategoryController::class, 'create'])
             ->name('super-admin.categories.create');
 
         Route::post('categories/store', [CategoryController::class, 'store'])
             ->name('super-admin.categories.store');
 
-        Route::delete('categories/{category}', [CategoryController::class, 'destroy']) //its working important for super admin
+        Route::delete('categories/{category}', [CategoryController::class, 'destroy'])
             ->name('super-admin.categories.destroy');
-
     });
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN
+| ADMIN ROUTES
 |--------------------------------------------------------------------------
 */
-
-/*GET|HEAD  super-admin/dashboard        super-admin.dashboard
-GET|HEAD  super-admin/admins           super-admin.admins.index
-GET|HEAD  super-admin/admins/create    super-admin.admins.create
-POST      super-admin/admins           super-admin.admins.store
-
-*/
-
 
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
@@ -182,15 +166,15 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])
             ->name('admin.dashboard');
 
-        // Admin Products CRUD
         Route::resource('products', ProductController::class);
     });
 
 /*
 |--------------------------------------------------------------------------
-| USER (SELLER)
+| USER ROUTES
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'role:user'])
     ->prefix('user')
     ->group(function () {
@@ -199,22 +183,15 @@ Route::middleware(['auth', 'role:user'])
             ->name('user.dashboard');
     });
 
+/*
+|--------------------------------------------------------------------------
+| OTHER
+|--------------------------------------------------------------------------
+*/
 
+Route::get('/orders/pdf', [OrderController::class, 'generatePdf'])
+    ->name('orders.pdf');
 
-
-
-
-
-Route::get('/orders/pdf', [OrderController::class, 'generatePdf'])->name('orders.pdf');
-
-/*Route::get('/stripe-test', function () {
-    return [
-        'key' => config('services.stripe.key'),
-        'secret' => substr(config('services.stripe.secret'), 0, 10) . '***'
-    ];
-});*/
 Route::get('/env-check', function () {
     return env('APP_URL', 'NOT LOADED');
 });
-
-

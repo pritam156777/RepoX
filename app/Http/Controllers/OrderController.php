@@ -67,7 +67,6 @@ class OrderController extends Controller
     {
         // 1️⃣ Log request for debugging
         \Log::info('Checkout Request Data:', $request->all());
-
         $user = auth()->user();
         $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
 
@@ -141,6 +140,7 @@ class OrderController extends Controller
                 ['order' => $order->load('items.product', 'user')]
             );
             $pdf->save($pdfPath);
+                    \Log::info($superAdmin);
 
             // 📧 EMAIL → CUSTOMER
             Mail::to($user->email)->send(

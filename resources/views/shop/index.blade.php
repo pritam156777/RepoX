@@ -68,7 +68,7 @@
                         </div>
 
                         {{-- PRODUCT INFO --}}
-                        <div class="views-shop-index-info flex flex-col justify-between h-full">
+                        <div class="views-shop-index-info flex flex-col justify-between">
 
                             <h3>{{ $product->name }}</h3>
 

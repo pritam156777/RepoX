@@ -1,13 +1,11 @@
 @extends('layouts.app')
+@section('content')
 
- <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
 
-     @section('content')
 
     <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
 
 
-        
         @auth
             @if(auth()->user()->role === 'super_admin')
 
@@ -19,7 +17,7 @@
                 {{-- CATEGORY IMAGE --}}
                 @if($category && $category->photo)
                     <img src="{{ asset('storage/' . $category->photo) }}"
-                         class="rounded-lg mb-4">
+                         class="h-40 rounded-lg mb-4">
                 @endif
 
 
@@ -42,10 +40,11 @@
             @endif
         @endauth
 
-    
-        
-        
-        @if($products->count())
+
+
+
+
+    @if($products->count())
 
             <div class="views-shop-index-grid">
 

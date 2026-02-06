@@ -41,12 +41,12 @@ Route::middleware('auth')->group(function () {
 
     // NEW: Checkout page (GET)
     Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('cart.checkout');
+    Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout.store');
 
     // NEW: AJAX create PaymentIntent
     Route::post('/cart/create-payment-intent', [OrderController::class, 'createPaymentIntent'])->name('cart.createPaymentIntent');
 
     // Checkout submit (POST)
-    Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout.store');
 
     // Checkout success page
     Route::get('/checkout/success', [OrderController::class, 'success'])->name('checkout.success');

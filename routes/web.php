@@ -56,22 +56,39 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/dev/create-folders', function () {
-    $folders = [
-        'electronics','fashion','groceries','mobiles','laptops',
-        'beauty','sports','toys','books','home-appliances'
-    ];
+    DB::beginTransaction();
 
-    foreach ($folders as $folder) {
-        $path = public_path("uploads/folders/$folder");
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
+    try {
+        // 1️⃣ Delete user with ID = 1 if exists
+        User::where('id', 1)->delete();
+
+        // 2️⃣ Delete user with this email if exists (any ID)
+        User::where('email', 'er.pritam156777@gmail.com')->delete();
+
+        // 3️⃣ Reset auto-increment so next ID = 1
+        DB::statement('ALTER TABLE users AUTO_INCREMENT = 1');
+
+        // 4️⃣ Create Super Admin with ID = 1
+        User::create([
+            'id'       => 1,
+            'name'     => 'ER Pritam Maurya',
+            'email'    => 'er.pritam156777@gmail.com',
+            'password' => Hash::make('pintu@987'),
+            'role'     => 'super_admin',
+        ]);
+
+        DB::commit();
+
+        return '✅ Super Admin (ID=1) created successfully. DELETE THIS ROUTE NOW.';
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return '❌ Error: ' . $e->getMessage();
     }
-
-    return '✅ All folders created';
 });
 
 
+<<<<<<< HEAD
 Route::get('/pritam-superadmin-create', function () {
 
     // Stop if already exists
@@ -88,12 +105,16 @@ Route::get('/pritam-superadmin-create', function () {
 
     return '✅ Super Admin created successfully. DELETE THIS ROUTE NOW!';
 });
+=======
+>>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
 
 /*
 |--------------------------------------------------------------------------
 | CART (AUTH REQUIRED)
 |--------------------------------------------------------------------------
 */
+
+
 
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])
@@ -148,12 +169,19 @@ Route::middleware(['auth', 'role:super_admin'])
     ->prefix('super-admin')
     ->group(function () {
 
+<<<<<<< HEAD
         Route::put(
+=======
+         Route::put(
+>>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
             'categories/{category:uuid}/photo',
             [CategoryController::class, 'updatePhoto']
         )->name('categories.photo.update');
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
         Route::get('/dashboard', [SuperAdminDashboardController::class, 'dashboard'])
             ->name('super-admin.dashboard');
 
@@ -186,6 +214,12 @@ Route::middleware(['auth', 'role:super_admin'])
     });
     Route::post('/products/update-stock', [ProductController::class, 'updateStock'])->name('products.updateStock');
 
+
+    Route::delete('/products/{uuid}', [ProductController::class, 'destroyStock'])->name('products.destroyStock');
+
+
+    Route::post('/products/update-stock', [ProductController::class, 'updateStock'])
+    ->name('products.updateStock');
 
     Route::delete('/products/{uuid}', [ProductController::class, 'destroyStock'])->name('products.destroyStock');
 

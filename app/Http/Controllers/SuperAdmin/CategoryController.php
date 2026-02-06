@@ -70,6 +70,61 @@ class CategoryController extends Controller
         return redirect()->back()->with('success', 'Category and image deleted successfully.');
     }
 
+        public function updatePhoto(Request $request, Category $category)
+    {
+        // 🔐 Super admin check
+        if (!auth()->check() || auth()->user()->role !== 'super_admin') {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'photo' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
+
+        $path = $category->photo; // keep old photo
+
+        if ($request->hasFile('photo')) {
+            $image = $request->file('photo');
+
+            // 🗑 Delete old files
+            if ($category->photo) {
+
+                $oldStorage = storage_path('app/products/' . $category->photo);
+                if (file_exists($oldStorage)) {
+                    unlink($oldStorage);
+                }
+
+                $oldPublic = public_path('images/storage/' . $category->photo);
+                if (file_exists($oldPublic)) {
+                    unlink($oldPublic);
+                }
+            }
+
+            // 📛 Filename (same format you use)
+            $filename = now()->format('l_Y-m-d_H-i-s')
+                . '--'
+                . rand(1000, 9999)
+                . '.'
+                . $image->getClientOriginalExtension();
+
+            // 📦 Store
+            $path = $image->storeAs('products', $filename, 'products');
+
+            // 🔁 Mirror
+            copy(
+                storage_path('app/products/' . $path),
+                public_path('images/storage/' . $path)
+            );
+        }
+
+        // 💾 Update ONLY photo
+        $category->update([
+            'photo' => $path,
+        ]);
+
+        return back()->with('success', 'Category photo updated successfully!');
+    }
+
 
     public function updatePhoto(Request $request, Category $category)
     {

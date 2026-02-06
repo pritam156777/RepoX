@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Product;
-use App\Policies\ProductPolicy;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,9 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
-    protected $policies = [
-        Product::class => ProductPolicy::class,
-    ];
 }

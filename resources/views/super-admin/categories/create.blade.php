@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 py-12">
+    <div class="">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Success Message -->
             @if(session('success'))

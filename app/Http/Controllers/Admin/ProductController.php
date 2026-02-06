@@ -73,6 +73,24 @@ class ProductController extends Controller
         ]);
     }
 
+        public function destroyStock(string $uuid)
+    {
+        $product = Product::where('uuid', $uuid)->first();
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found'
+            ], 404);
+        }
+
+        $product->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
 
 
     public function edit(Product $product)

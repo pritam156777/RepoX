@@ -68,7 +68,7 @@ class OrderController extends Controller
     {
         // 1️⃣ Log request for debugging
         \Log::info('Checkout Request Data:', $request->all());
-
+dd('order clicked');
         $user = auth()->user();
         $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
 

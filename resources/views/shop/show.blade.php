@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="{{ asset('css/folder-slider.css') }}">
 
 
-
 @section('content')
     {{-- =============================
          PRODUCT HERO SECTION

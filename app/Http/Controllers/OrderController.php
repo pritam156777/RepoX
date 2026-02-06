@@ -23,6 +23,7 @@ class OrderController extends Controller
     public function checkoutPage()
     {
         $cartItems = Cart::with('product.category')->where('user_id', auth()->id())->get();
+        dd($cartItems);
         return view('cart.index', compact('cartItems'));
     }
 

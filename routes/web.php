@@ -189,6 +189,8 @@ Route::middleware(['auth', 'role:super_admin|admin'])
     Route::post('/products/update-stock', [ProductController::class, 'updateStock'])
     ->name('products.updateStock');
 
+    Route::delete('/products/{uuid}', [ProductController::class, 'destroyStock'])->name('products.destroyStock');
+
 
 /*
 |--------------------------------------------------------------------------

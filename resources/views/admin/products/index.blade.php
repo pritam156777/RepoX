@@ -111,6 +111,7 @@
                                 <th>Stock</th>
                                 <th>Manage Stock</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -118,7 +119,7 @@
                                 <tr>
                                     <td>{{ $product->name }}</td>
                                     <td>₹ {{ number_format($product->price) }}</td>
-    
+
                                     <td>
                                 <span class="badge bg-primary fs-6"
                                       id="stock-{{ $product->id }}">
@@ -152,7 +153,21 @@
                                             <span class="badge bg-danger">Inactive</span>
                                         @endif
                                     </td>
-                                </tr>
+
+
+                                    <td>
+                                        <button
+                                            class="btn btn-outline-danger btn-sm delete-btn"
+                                            data-uuid="{{ $product->uuid }}"
+                                            data-name="{{ $product->name }}"
+                                            data-url="{{ route('products.destroyStock', $product->uuid) }}">
+                                            🗑 Delete
+                                        </button>
+
+
+                                    </td>
+
+
                             @endforeach
 
                             </tbody>
@@ -161,8 +176,47 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow rounded-4">
+
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">⚠ Confirm Delete</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <p class="fs-5">
+                            Are you sure you want to delete
+                            <strong id="deleteProductName"></strong>?
+                        </p>
+                        <p class="text-muted">This action cannot be undone.</p>
+                    </div>
+
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            ❌ No
+                        </button>
+
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                            ✅ Yes, Delete
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
     @endsection
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
+
         function changeStock(id, type) {
             let qty = parseInt($('#qty-'+id).val()) || 1;
             sendStock(id, type === -1 ? -qty : qty);
@@ -185,4 +239,88 @@
                 }
             });
         }
+
+
+
+
+        let deleteUrl = '';
+        let deleteUuid = '';
+
+        $(document).on('click', '.delete-btn', function () {
+            deleteUrl = $(this).data('url');
+            deleteUuid = $(this).data('uuid');
+
+            $('#deleteProductName').text($(this).data('name'));
+            $('#deleteModal').modal('show');
+        });
+
+        // CONFIRM DELETE
+        $(document).on('click', '#confirmDeleteBtn', function () {
+
+            if (!deleteUrl) return;
+
+            $.ajax({
+                url: deleteUrl,
+                type: 'POST',
+                data: {
+                    _method: 'DELETE',
+                    _token: "{{ csrf_token() }}"
+                },
+
+                success: function (res) {
+
+                    if (!res.success) {
+                        alert(res.message || 'Delete failed');
+                        return;
+                    }
+
+                    $('#row-' + deleteUuid).fadeOut(300, function () {
+                        $(this).remove();
+                    });
+
+                    $('#deleteModal').modal('hide');
+                    showDeleteSuccess();
+
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 5000);
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    alert('Delete failed');
+                }
+
+
+            });
+        });
+
+        // SUCCESS MESSAGE FUNCTION
+        function showDeleteSuccess() {
+
+            // Remove old alert if exists
+            $('#deleteSuccessAlert').remove();
+
+            let alertHtml = `
+        <div id="deleteSuccessAlert"
+             class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-4 shadow"
+             role="alert"
+             style="z-index:1055">
+            ✅ Product deleted successfully.
+        </div>
+    `;
+
+            $('body').append(alertHtml);
+
+            // Auto-hide after 5 seconds (before refresh)
+            setTimeout(function () {
+                $('#deleteSuccessAlert').fadeOut(300, function () {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+
+
+
+
     </script>
+

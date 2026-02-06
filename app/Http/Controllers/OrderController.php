@@ -142,7 +142,6 @@ class OrderController extends Controller
             $pdf->save($pdfPath);
                     \Log::info($superAdmin);
 
-dd('order done successfull but not visible');
             // 📧 EMAIL → CUSTOMER
             Mail::to($user->email)->send(
                 new OrderInvoiceMail($order, $pdfPath, $admins, $superAdmin)

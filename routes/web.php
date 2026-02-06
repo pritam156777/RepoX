@@ -148,6 +148,12 @@ Route::middleware(['auth', 'role:super_admin'])
     ->prefix('super-admin')
     ->group(function () {
 
+        Route::put(
+            'categories/{category:uuid}/photo',
+            [CategoryController::class, 'updatePhoto']
+        )->name('categories.photo.update');
+
+
         Route::get('/dashboard', [SuperAdminDashboardController::class, 'dashboard'])
             ->name('super-admin.dashboard');
 
@@ -178,6 +184,11 @@ Route::middleware(['auth', 'role:super_admin'])
             ->name('super-admin.categories.destroy');
 
     });
+    Route::post('/products/update-stock', [ProductController::class, 'updateStock'])->name('products.updateStock');
+
+
+    Route::delete('/products/{uuid}', [ProductController::class, 'destroyStock'])->name('products.destroyStock');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -201,7 +212,7 @@ Route::middleware(['auth', 'role:admin'])
             ->name('admin.dashboard');
 
         // Admin Products CRUD
-        Route::resource('products', ProductController::class);
+        Route::resource('products', ProductController::class); //this contains all admin.products like get, put, post,etc
     });
 
 /*

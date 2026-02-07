@@ -167,6 +167,13 @@ Route::middleware(['auth', 'role:admin'])
             ->name('admin.dashboard');
 
         Route::resource('products', ProductController::class);
+
+                //here added new items
+        Route::post('/products/update-stock', [ProductController::class, 'updateStock'])
+            ->name('products.updateStock');
+
+        Route::delete('/products/{uuid}', [ProductController::class, 'destroyStock'])
+            ->name('products.destroyStock');
     });
 
 /*

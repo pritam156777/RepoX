@@ -11,7 +11,6 @@ class RoleMiddleware
 
     public function handle(Request $request, Closure $next, ...$roles)
     {
-<<<<<<< HEAD
 
         if (!auth()->check()) {
         abort(403);
@@ -26,7 +25,6 @@ class RoleMiddleware
             abort(403, 'Forbidden - role mismatch issue');
         }
 
-=======
         if (!auth()->check()) {
             abort(403);
         }
@@ -40,7 +38,6 @@ class RoleMiddleware
             abort(403, 'Forbidden - role mismatch issue');
         }
 
->>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
         return $next($request);
 
     }

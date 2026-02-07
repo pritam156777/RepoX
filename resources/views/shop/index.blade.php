@@ -5,10 +5,7 @@
 
     <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
         @auth
             @if(auth()->user()->role === 'super_admin')
 
@@ -43,13 +40,7 @@
             @endif
         @endauth
 
-<<<<<<< HEAD
-=======
 
-
-
-
->>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
     @if($products->count())
 
             <div class="views-shop-index-grid">

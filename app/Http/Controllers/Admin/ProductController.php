@@ -73,11 +73,7 @@ class ProductController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
-    public function destroyStock(string $uuid)
-=======
-        public function destroyStock(string $uuid)
->>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
+  public function destroyStock(string $uuid)
     {
         $product = Product::where('uuid', $uuid)->first();
 
@@ -97,10 +93,7 @@ class ProductController extends Controller
 
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 9cab5cf9e96d80ee4f131c4c03a7227d3aeeb65b
     public function edit(Product $product)
     {
         $this->authorize('update', $product); // Make sure admin owns this product

@@ -19,6 +19,7 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        dd('adfsdf');
        $request->validate([
         'name'  => 'required|string|max:255',
         'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',

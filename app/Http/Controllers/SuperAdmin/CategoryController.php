@@ -19,36 +19,26 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:categories,name',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-        ]);
+       $request->validate([
+        'name'  => 'required|string|max:255',
+        'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+    ]);
 
-        $path = null;
+    $photoPath = null;
 
-        if ($request->hasFile('photo')) {
-            $image = $request->file('photo');
+    if ($request->hasFile('photo')) {
+        $photoPath = $request->file('photo')
+            ->store('categories', 'public');
+    }
 
-            // Create unique filename: Tuesday_2026-01-27_00-19-48--5666.JPG
-            $filename = now()->format('l_Y-m-d_H-i-s')
-                . '--'
-                . rand(1000, 9999)
-                . '.' . $image->getClientOriginalExtension();
+    Category::create([
+        'name'  => $request->name,
+        'photo' => $photoPath,
+    ]);
 
-            // Store in storage disk
-            $path = $image->storeAs('products', $filename, 'products');
-
-            // Mirror to public/images/storage/products
-            copy(storage_path('app/products/' . $path), public_path('images/storage/' . $path));
-        }
-
-        // Save in DB
-        Category::create([
-            'name' => $request->name,
-            'photo' => $path,
-        ]);
-
-        return redirect()->back()->with('success', 'Category created successfully!');
+    return redirect()
+        ->route('super-admin.categories.create')
+        ->with('success', 'Category created successfully');
     }
 
 

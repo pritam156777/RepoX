@@ -18,7 +18,7 @@ class ShopController extends Controller
 
         $allProducts = Product::all();
         $relatedProducts = collect(); // empty collection
-
+dd('$product');
         if ($product) {
             $relatedProducts = Product::where('category_id', $product->category_id)
                 ->where('id', '!=', $product->id)
@@ -31,7 +31,6 @@ class ShopController extends Controller
             ->groupBy(function($product) {
                 return $product->category->name;
             });
-dd($productsByCategory);
         return view('shop.show', [
             'categories'        => $categories,
             'product'           => $product,          // may be null

@@ -63,7 +63,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteConfirmModal"
                                         data-category="{{ $category->name }}">
-                                    🗑 Delete
+                                    🗑 Delete It
                                 </button>
 
 

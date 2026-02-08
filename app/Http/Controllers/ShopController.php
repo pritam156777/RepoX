@@ -11,7 +11,7 @@ class ShopController extends Controller
     // Home page
     public function home()
     {
-dd('sfgsdfg');
+
         $categories = Category::all();
 
         $product = Product::with('category')->latest()->first();
@@ -31,7 +31,7 @@ dd('sfgsdfg');
             ->groupBy(function($product) {
                 return $product->category->name;
             });
-
+dd($productsByCategory);
         return view('shop.show', [
             'categories'        => $categories,
             'product'           => $product,          // may be null

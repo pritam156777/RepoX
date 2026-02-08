@@ -241,11 +241,10 @@
         }
 
 
-
-
         let deleteUrl = '';
         let deleteUuid = '';
 
+        // OPEN DELETE MODAL
         $(document).on('click', '.delete-btn', function () {
             deleteUrl = $(this).data('url');
             deleteUuid = $(this).data('uuid');
@@ -264,9 +263,8 @@
                 type: 'POST',
                 data: {
                     _method: 'DELETE',
-                    _token: "{{ csrf_token() }}"
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 },
-
                 success: function (res) {
 
                     if (!res.success) {
@@ -274,53 +272,49 @@
                         return;
                     }
 
-                    $('#row-' + deleteUuid).fadeOut(300, function () {
-                        $(this).remove();
-                    });
-
+                    // Hide the modal
                     $('#deleteModal').modal('hide');
-                    showDeleteSuccess();
 
+                    // Show success message for 3 seconds
+                    showDeleteSuccess(res.message || '✅ Product deleted successfully.', 3000);
+
+                    // OPTIONAL: Refresh page after 3 seconds (if you want the deleted item to disappear)
                     setTimeout(function () {
-                        window.location.reload();
-                    }, 5000);
+                        location.reload();
+                    }, 3000);
+
                 },
                 error: function (xhr) {
                     console.error(xhr.responseText);
                     alert('Delete failed');
                 }
-
-
             });
         });
 
         // SUCCESS MESSAGE FUNCTION
-        function showDeleteSuccess() {
-
+        function showDeleteSuccess(message = '✅ Product deleted successfully.', duration = 3000) {
             // Remove old alert if exists
             $('#deleteSuccessAlert').remove();
 
-            let alertHtml = `
+            const alertHtml = `
         <div id="deleteSuccessAlert"
              class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-4 shadow"
              role="alert"
              style="z-index:1055">
-            ✅ Product deleted successfully.
+            ${message}
         </div>
     `;
 
             $('body').append(alertHtml);
 
-            // Auto-hide after 5 seconds (before refresh)
+            // Auto-hide after `duration` milliseconds
             setTimeout(function () {
                 $('#deleteSuccessAlert').fadeOut(300, function () {
                     $(this).remove();
                 });
-            }, 5000);
+            }, duration);
         }
 
-
-
-
     </script>
+
 

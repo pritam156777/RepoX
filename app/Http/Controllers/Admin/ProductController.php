@@ -125,8 +125,17 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        $this->authorize('delete', $product);
+       $product = Product::where('uuid', $uuid)->firstOrFail();
+
+        $productName = $product->name; // save name for message
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted!');
+
+        // Store flash message in session for next page reload
+        session()->flash('delete_success', "✅ Product '{$productName}' deleted successfully.");
+
+        return response()->json([
+            'success' => true,
+            'message' => "✅ Product '{$productName}' deleted successfully"
+        ]);
     }
 }

@@ -11,7 +11,7 @@ class ShopController extends Controller
     // Home page
     public function home()
     {
-
+dd('sfgsdfg');
         $categories = Category::all();
 
         $product = Product::with('category')->latest()->first();

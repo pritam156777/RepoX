@@ -18,6 +18,7 @@ class ShopController extends Controller
     $allProducts = Product::all();
 
     $relatedProducts = collect(); // empty collection
+    dd($relatedProducts);
     if ($product) {
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)

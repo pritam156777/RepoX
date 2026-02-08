@@ -11,15 +11,20 @@ class ShopController extends Controller
     // Home page
    public function home()
 {
+public function home()
+{
+    // Fetch all categories
     $categories = Category::all();
 
+    // Get latest product with category relationship
     $product = Product::with('category')->latest()->first();
 
-    $allProducts = Product::all();
+    // Fetch all products
+    $allProducts = Product::with('category')->get(); // eager load category for efficiency
 
-    $relatedProducts = collect(); // empty collection
-    dd($relatedProducts);
-    if ($product) {
+    // Prepare related products safely
+    $relatedProducts = collect(); // empty collection by default
+    if ($product && $product->category) {
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->limit(4)
@@ -27,12 +32,11 @@ class ShopController extends Controller
     }
 
     // Group products by category safely
-    $productsByCategory = Product::with('category')
-        ->get()
-        ->groupBy(function($product) {
-            return $product->category ? $product->category->name : 'Uncategorized';
-        });
+    $productsByCategory = Product::with('category')->get()->groupBy(function ($product) {
+        return $product->category ? $product->category->name : 'Uncategorized';
+    });
 
+    // Return view with all data
     return view('shop.show', [
         'categories'        => $categories,
         'product'           => $product,          

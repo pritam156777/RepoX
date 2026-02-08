@@ -24,14 +24,15 @@ class ShopController extends Controller
                 ->limit(4)
                 ->get();
         }
-dd($product);
-
-        $productsByCategory = Product::with('category')
+        
+        
+productsByCategory = Product::with('category')
             ->get()
             ->groupBy(function($product) {
                 return $product->category->name;
             });
-        
+        dd($product);
+
         return view('shop.show', [
             'categories'        => $categories,
             'product'           => $product,          // may be null

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
-
+<link rel="stylesheet" href="{{ asset('css/views-shop-index.css') }}">
+ <link rel="stylesheet" href="{{ asset('css/modern-category-card.css') }}">
 
 
     <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4">
@@ -8,7 +9,7 @@
         @auth
             @if(auth()->user()->role === 'super_admin')
 
-                <link rel="stylesheet" href="{{ asset('css/modern-category-card.css') }}">
+               
 
                 <div class="modern-category-wrapper" style="margin-top: -7pc">
 
@@ -284,6 +285,5 @@
 @endsection
 
 {{-- EXTRA ASSETS --}}
-<link rel="stylesheet" href="{{ asset('css/views-shop-index.css') }}">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="{{ asset('js/views-shop-index.js') }}"></script>

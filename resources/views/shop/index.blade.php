@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/views-shop-index.css') }}">
- <link rel="stylesheet" href="{{ asset('css/modern-category-card.css') }}">
 
 
     <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4">

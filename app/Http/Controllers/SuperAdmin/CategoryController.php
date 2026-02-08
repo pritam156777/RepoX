@@ -18,38 +18,38 @@ class CategoryController extends Controller
 
 
     public function store(Request $request)
-        {
-            $request->validate([
-                'name'  => 'required|unique:categories,name',
-                'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-            ]);
+    {
+        $request->validate([
+            'name' => 'required|unique:categories,name',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
 
-            $path = null;
+        $path = null;
 
-            if ($request->hasFile('photo')) {
-                $image = $request->file('photo');
+        if ($request->hasFile('photo')) {
+            $image = $request->file('photo');
 
-                // Create unique filename: Tuesday_2026-01-27_00-19-48--5666.JPG
-                $filename = now()->format('l_Y-m-d_H-i-s')
-                    . '--'
-                    . rand(1000,9999)
-                    . '.' . $image->getClientOriginalExtension();
+            // Create unique filename: Tuesday_2026-01-27_00-19-48--5666.JPG
+            $filename = now()->format('l_Y-m-d_H-i-s')
+                . '--'
+                . rand(1000, 9999)
+                . '.' . $image->getClientOriginalExtension();
 
-                // Store in storage disk
-                $path = $image->storeAs('products', $filename, 'products');
+            // Store in storage disk
+            $path = $image->storeAs('products', $filename, 'products');
 
-                // Mirror to public/images/storage/products
-                copy(storage_path('app/products/' . $path), public_path('images/storage/' . $path));
-            }
-
-            // Save in DB
-            Category::create([
-                'name'  => $request->name,
-                'photo' => $path,
-            ]);
-
-            return redirect()->back()->with('success', 'Category created successfully!');
+            // Mirror to public/images/storage/products
+            copy(storage_path('app/products/' . $path), public_path('images/storage/' . $path));
         }
+
+        // Save in DB
+        Category::create([
+            'name' => $request->name,
+            'photo' => $path,
+        ]);
+
+        return redirect()->back()->with('success', 'Category created successfully!');
+    }
 
 
     public function destroy(Category $category)

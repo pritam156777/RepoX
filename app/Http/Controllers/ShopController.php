@@ -101,7 +101,6 @@ class ShopController extends Controller
         // Start query for products
         $products = Product::query();
         $category = null;
-
         // -----------------------------
         // ISSUE: Check if category exists
         // -----------------------------

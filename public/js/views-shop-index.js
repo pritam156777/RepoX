@@ -47,3 +47,45 @@
 }, 200);
 });
 
+
+
+    /* ============================
+       SUPER ADMIN JS MAGIC
+    ============================ */
+
+
+        $('#viewsShopPhotoInput').on('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        // Preview image
+        const reader = new FileReader();
+        reader.onload = e => {
+        $('#viewsShopCategoryPreview')
+        .attr('src', e.target.result)
+        .addClass('viewsShopImageGlow');
+    };
+        reader.readAsDataURL(file);
+
+        // Activate update button
+        $('#viewsShopUpdateBtn')
+        .prop('disabled', false)
+        .removeClass('viewsShopBtnDisabled')
+        .addClass('viewsShopBtnActivePulse')
+        .text('✨ Ready to Update');
+    });
+
+        // Loading state
+        $('#viewsShopUpdateForm').on('submit', function () {
+        $('#viewsShopUpdateBtn')
+            .text('⏳ Updating...')
+            .addClass('viewsShopBtnLoading')
+            .prop('disabled', true);
+    });
+
+    $('#deleteConfirmModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const categoryName = button.data('category');
+        $('#deleteCategoryName').text(categoryName);
+    });
+

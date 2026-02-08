@@ -120,10 +120,11 @@ Route::middleware(['auth', 'role:super_admin'])
         Route::get('/dashboard', [SuperAdminDashboardController::class, 'dashboard'])
             ->name('super-admin.dashboard');
 
-        Route::put(
+            Route::put(
             'categories/{category:uuid}/photo',
             [CategoryController::class, 'updatePhoto']
         )->name('categories.photo.update');
+
 
         // Admin management
         Route::get('/admins', [AdminManagementController::class, 'index'])

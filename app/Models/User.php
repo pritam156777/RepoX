@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 class User extends Authenticatable
 {
+    use SoftDeletes;
     use Notifiable;
+
+        protected $dates = ['deleted_at'];
+
 
     protected $fillable = [
         'name',
@@ -19,6 +25,9 @@ class User extends Authenticatable
     ];
 
     protected $hidden = ['password'];
+
+
+
 
     public function creator()
     {

@@ -13,7 +13,7 @@
             @endif
 
             <!-- Category Form Card -->
-            <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-3xl shadow-2xl p-10 md:p-16 hover:shadow-3xl transition-all">
+            <div class="bg-gradient-to-br  via-gray-900  rounded-3xl shadow-2xl p-10 md:p-16 hover:shadow-3xl transition-all" style="background: #15160e;">
                 <h3 class="text-3xl font-extrabold text-white mb-3 text-center tracking-wide">
                     Create a New Category
                 </h3>
@@ -101,7 +101,7 @@
 
                         <button type="submit"
                                 style="width: 12pc;"
-                                class="submit-btn px-8 py-3 rounded-xl font-bold shadow-lg">
+                                class="submit-btn px-10 py-3 rounded-xl font-bold shadow-lg">
                             + Create Category
                         </button>
                     </div>

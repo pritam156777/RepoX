@@ -3,45 +3,131 @@
 
 
 
-    <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4 py-24">
-
+    <div class="views-shop-index-wrapper max-w-7xl mx-auto px-4">
 
         @auth
             @if(auth()->user()->role === 'super_admin')
 
+                <link rel="stylesheet" href="{{ asset('css/modern-category-card.css') }}">
 
-                <h1 class="text-3xl font-bold mb-4">
-                    {{ $category ? $category->name : 'Shop' }}
-                </h1>
+                <div class="modern-category-wrapper" style="margin-top: -7pc">
 
-                {{-- CATEGORY IMAGE --}}
-                @if($category && $category->photo)
-                    <img src="{{ asset('storage/' . $category->photo) }}"
-                         class="h-40 rounded-lg mb-4">
-                @endif
+                    <div class="modern-category-card">
+
+                        {{-- HEADER --}}
+                        <div class="modern-card-header">
+                            <h1>{{ $category ? $category->name : 'Shop' }}</h1>
+                        </div>
+
+                        {{-- IMAGE --}}
+                        <div class="modern-image-box">
+                            @if($category && $category->photo)
+                                <img id="imagePreview"
+                                     src="{{ asset('storage/' . $category->photo) }}"
+                                     alt="Category Image">
+                            @else
+                                <div class="modern-image-placeholder">
+                                    No Image Available
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- UPDATE FORM --}}
+                        <form id="updatePhotoForm"
+                              action="{{ route('categories.photo.update', $category->uuid) }}"
+                              method="POST"
+                              enctype="multipart/form-data">
+
+                            @csrf
+                            @method('PUT')
+
+                            <label class="modern-upload-btn">
+                                Select New Image
+                                <input type="file"
+                                       name="photo"
+                                       id="photoInput"
+                                       accept="image/*"
+                                       hidden
+                                       required>
+                            </label>
+
+                            {{-- ACTION BUTTONS --}}
+                            <div class="modern-action-row">
+
+                                <button type="submit" class="btn-update">
+                                    ✨ Update Photo
+                                </button>
+                                <button type="button"
+                                        class="btn-delete"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteConfirmModal"
+                                        data-category="{{ $category->name }}">
+                                    🗑 Delete
+                                </button>
+
+
+                            </div>
+
+                        </form>
 
 
 
-                <form style="margin-bottom: 5pc" action="{{ route('categories.photo.update', $category->uuid) }}"
-                      method="POST"
-                      enctype="multipart/form-data">
 
-                    @csrf
-                    @method('PUT')
+                    </div>
 
-                    <input type="file" name="photo" required>
+                </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        Update Category Photo
-                    </button>
 
-                </form>
+
+                <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content delete-modal">
+
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title text-danger">⚠ Confirm Deletion</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center">
+                                <p class="delete-text">
+                                    Are you sure you want to delete
+                                    <strong id="deleteCategoryName"></strong>?
+                                </p>
+                                <small class="text-muted">
+                                    This action is reversible (soft delete).
+                                </small>
+                            </div>
+
+                            <div class="modal-footer border-0 justify-content-center gap-3">
+
+                                <button type="button"
+                                        class="btn btn-warning px-4"
+                                        data-bs-dismiss="modal">
+                                    ❌ No
+                                </button>
+
+                                <form id="deleteCategoryForm"
+                                      action="{{ route('super-admin.categories.destroy', $category) }}"
+                                      method="POST">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="btn btn-danger px-4">
+                                        ✅ Yes, Delete
+                                    </button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             @endif
         @endauth
 
 
-    @if($products->count())
+        @if($products->count())
 
             <div class="views-shop-index-grid">
 
@@ -111,11 +197,11 @@
                     {{-- ================= END CARD ================= --}}
 
                     {{-- ================= QUICK VIEW MODAL ================= --}}
-                        <div class="modal fade"
-                             id="productQuickViewModal-{{ $product->id }}"
-                             tabindex="-1"
-                             aria-hidden="true"
-                        >
+                    <div class="modal fade"
+                         id="productQuickViewModal-{{ $product->id }}"
+                         tabindex="-1"
+                         aria-hidden="true"
+                    >
 
                         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                             <div class="">
@@ -161,7 +247,7 @@
                                                 <div class="action-buttons d-flex gap-3">
 
                                                     <i class="btn btn-outline-secondary rounded-pill px-4"
-                                                            >
+                                                    >
                                                         Your complete information is showing here.
                                                     </i>
                                                 </div>

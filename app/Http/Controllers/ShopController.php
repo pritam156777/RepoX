@@ -9,41 +9,38 @@ use Illuminate\Http\Request;
 class ShopController extends Controller
 {
     // Home page
-    public function home()
-    {
+   public function home()
+{
+    $categories = Category::all();
 
-        $categories = Category::all();
+    $product = Product::with('category')->latest()->first();
 
-        $product = Product::with('category')->latest()->first();
+    $allProducts = Product::all();
 
-        $allProducts = Product::all();
-        $relatedProducts = collect(); // empty collection
-        if ($product) {
-            $relatedProducts = Product::where('category_id', $product->category_id)
-                ->where('id', '!=', $product->id)
-                ->limit(4)
-                ->get();
-        }
-        
-        
-productsByCategory = Product::with('category')
-            ->get()
-            ->groupBy(function($product) {
-                return $product->category->name;
-            });
-        dd($product);
-
-        return view('shop.show', [
-            'categories'        => $categories,
-            'product'           => $product,          // may be null
-            'allProducts'       => $allProducts,
-            'relatedProducts'   => $relatedProducts,
-            'productsAvailable' => $product !== null,
-            'productsByCategory'  => $productsByCategory, // NEW
-
-        ]);
+    $relatedProducts = collect(); // empty collection
+    if ($product) {
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->limit(4)
+            ->get();
     }
 
+    // Group products by category safely
+    $productsByCategory = Product::with('category')
+        ->get()
+        ->groupBy(function($product) {
+            return $product->category ? $product->category->name : 'Uncategorized';
+        });
+
+    return view('shop.show', [
+        'categories'        => $categories,
+        'product'           => $product,          
+        'allProducts'       => $allProducts,
+        'relatedProducts'   => $relatedProducts,
+        'productsAvailable' => $product !== null,
+        'productsByCategory'=> $productsByCategory,
+    ]);
+}
 
     public function show($uuid)
     {

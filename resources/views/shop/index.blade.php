@@ -9,7 +9,200 @@
         @auth
             @if(auth()->user()->role === 'super_admin')
 
-               
+                       <style>
+
+
+            /* BACKGROUND */
+            .modern-category-wrapper {
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Inter', sans-serif;
+                margin-bottom:5pc;
+            }
+
+            /* CARD */
+            .modern-category-card {
+                width: 440px;
+                border-radius: 26px;
+                backdrop-filter: blur(22px);
+                box-shadow: 0 14px 23px rgba(0, 38, 0, .16);
+                padding-bottom: 26px;
+                color: white;
+            }
+
+            /* HEADER */
+            .modern-card-header {
+                padding: 26px;
+                text-align: center;
+                background: linear-gradient(135deg, #6366f1, #22d3ee);
+                border-radius: 26px 26px 0 0;
+            }
+
+            .modern-card-header h1 {
+                font-size: 26px;
+                font-weight: 800;
+            }
+
+            /* IMAGE */
+            .modern-image-box {
+                margin: 24px;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 4px 7px rgba(0, 0, 3, 0.5);
+            }
+
+            .modern-image-box img {
+                width: 100%;
+                object-fit: cover;
+                transition: transform .4s ease;
+            }
+
+            .modern-image-box:hover img {
+                transform: scale(1.06);
+            }
+
+            .modern-image-placeholder {
+                height: 230px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: rgba(255,255,255,.1);
+                font-size: 15px;
+                opacity: .7;
+            }
+
+            /* UPLOAD BUTTON */
+            .modern-upload-btn {
+                margin: 0 24px 18px;
+                display: block;
+                padding: 14px;
+                border-radius: 16px;
+                text-align: center;
+                cursor: pointer;
+                font-weight: 600;
+                background: linear-gradient(135deg, #8b5cf6, #6366f1);
+                transition: all .3s ease;
+            }
+
+            .modern-upload-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 30px rgba(99,102,241,.5);
+            }
+
+            /* ACTION ROW */
+            .modern-action-row {
+                display: flex;
+                gap: 14px;
+                padding: 0 24px;
+            }
+
+            /* UPDATE */
+            .btn-update {
+                flex: 1;
+                padding: 14px;
+                border-radius: 18px;
+                border: none;
+                background: linear-gradient(135deg, #22c55e, #16a34a);
+                color: white;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all .3s ease;
+            }
+
+            .btn-update:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 30px rgba(34,197,94,.5);
+            }
+
+            /* DELETE */
+            .btn-delete {
+                flex: 1;
+                padding: 14px;
+                border-radius: 18px;
+                border: none;
+                background: linear-gradient(135deg, #ef4444, #b91c1c);
+                color: white;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all .3s ease;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 30px rgba(239,68,68,.5);
+            }
+
+            .viewsShopConnectedActions {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+            /* Disabled Update Button */
+            .viewsShopBtnDisabled {
+                background: linear-gradient(135deg, #334155, #1e293b);
+                color: #94a3b8;
+                box-shadow: none;
+                filter: grayscale(1);
+                transform: none !important;
+            }
+
+            /* Active Pulse Effect */
+            .viewsShopBtnActivePulse {
+                animation: viewsShopPulse 1.6s infinite;
+            }
+
+            @keyframes viewsShopPulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(34,197,94,0.6);
+                }
+                70% {
+                    box-shadow: 0 0 0 16px rgba(34,197,94,0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(34,197,94,0);
+                }
+            }
+
+            /* Make upload + button feel grouped */
+            .viewsShopFileUpload span,
+            #viewsShopUpdateBtn {
+                height: 52px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Mobile Friendly */
+            @media (max-width: 520px) {
+                .viewsShopConnectedActions {
+                    flex-direction: column;
+                }
+            }
+
+            .delete-modal {
+
+                color: white;
+                border-radius: 20px;
+                box-shadow: 0 30px 80px rgba(0,0,0,.8);
+            }
+
+            .delete-text {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+
+
+
+
+
+
+        </style>
+
 
                 <div class="modern-category-wrapper" style="margin-top: -7pc">
 
